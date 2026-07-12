@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Project": {
+      "title": "SFT Project",
+      "description": "An SFT project containing configuration presets and dataset batches",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique project identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user identifier"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Name of the project"
+        },
+        "settings": {
+          "type": "object",
+          "description": "Project configuration and guidelines"
+        },
+        "batches": {
+          "type": "array",
+          "description": "List of dataset batches belonging to the project"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the project was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the project was last updated"
+        }
+      },
+      "required": ["id", "userId", "name", "settings", "batches", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "projects/{projectId}": {
+      "schema": "Project",
+      "description": "Store all user projects"
+    }
+  }
+}

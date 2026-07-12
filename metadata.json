@@ -1,0 +1,6 @@
+{
+  "name": "SFT Studio Pro",
+  "description": "A workflow-driven studio for creating, converting, aligning, and validating high-quality supervised fine-tuning (SFT) datasets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

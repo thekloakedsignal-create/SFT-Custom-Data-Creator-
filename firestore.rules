@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidProject(data) {
+      return data.id is string
+        && data.userId == request.auth.uid
+        && data.name is string
+        && data.name.size() <= 100
+        && data.settings is map
+        && data.batches is list;
+    }
+
+    // Projects rules
+    match /projects/{projectId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() 
+        && isValidId(projectId)
+        && isValidProject(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+        
+      allow update: if isSignedIn()
+        && isValidId(projectId)
+        && isValidProject(incoming())
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time;
+        
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+  }
+}
